@@ -71,12 +71,12 @@ def ols(X_train_scaled, X_validate_scaled, y_train, y_validate, metric_df):
     
     # add to eval to metric holder
     metric_df = metric_df.append({
-        'model': 'ols_egressor', 
+        'model': 'ols_regressor', 
         'RMSE_train': rmse_train,
         'RMSE_validate': rmse_validate,
         }, ignore_index=True)
     
-    return metric_df
+    return metric_df, y_validate
 
 
 # create LassoLars Model
@@ -104,12 +104,12 @@ def lars(X_train_scaled, X_validate_scaled, y_train, y_validate, metric_df):
     
     # add to metric holder
     metric_df = metric_df.append({
-    'model': 'lasso_alpha_.01', 
+    'model': 'lasso_lars_.01', 
     'RMSE_train': rmse_train,
     'RMSE_validate': rmse_validate,
     }, ignore_index=True)
 
-    return metric_df
+    return metric_df, y_validate
 
 
 
@@ -145,7 +145,7 @@ def glm(X_train_scaled, X_validate_scaled, y_train, y_validate, metric_df):
         'RMSE_validate': rmse_validate,
         }, ignore_index=True)
     
-    return metric_df
+    return metric_df, y_validate
 
 
 
@@ -186,7 +186,7 @@ def poly(X_train_scaled, X_validate_scaled, X_test_scaled, y_train, y_validate, 
         'RMSE_validate': rmse_validate,
         }, ignore_index=True)
 
-    return X_test_degree2, lm2, metric_df
+    return X_test_degree2, lm2, metric_df, y_validate
 
 
 
@@ -207,18 +207,18 @@ def metric(y_train, y_validate, y_test,X_train_scaled, X_validate_scaled, X_test
     y_train, y_validate, y_test, metric_df = baseline(y_train, y_validate, y_test)
     
     
-    metric_df = ols(X_train_scaled, X_validate_scaled, y_train, y_validate, metric_df)
+    metric_df, y_validate = ols(X_train_scaled, X_validate_scaled, y_train, y_validate, metric_df)
     
     
-    metric_df = lars(X_train_scaled, X_validate_scaled, y_train, y_validate, metric_df)
+    metric_df, y_validate = lars(X_train_scaled, X_validate_scaled, y_train, y_validate, metric_df)
     
     
-    metric_df = glm(X_train_scaled, X_validate_scaled, y_train, y_validate, metric_df)
+    metric_df, y_validate = glm(X_train_scaled, X_validate_scaled, y_train, y_validate, metric_df)
     
     
-    X_test_degree2, lm2, metric_df = poly(X_train_scaled, X_validate_scaled, X_test_scaled, y_train, y_validate, metric_df)
+    X_test_degree2, lm2, metric_df, y_validate = poly(X_train_scaled, X_validate_scaled, X_test_scaled, y_train, y_validate, metric_df)
     
-    return metric_df, X_test_degree2, lm2, y_test
+    return metric_df, X_test_degree2, lm2, y_test, y_validate
 
 
 
